@@ -12,6 +12,8 @@ const Results: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
+  const apiURL = process.env.REACT_APP_API_URL;
+
   const from = searchParams.get('from');
   const to = searchParams.get('to');
 
@@ -43,7 +45,7 @@ const Results: React.FC = () => {
   useEffect(() => {
     const fetchDepartures = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/departures?station=${from}&station_detail=destination,calling_at&to_offset=PT02:30:00`);
+        const res = await fetch(`${apiURL}?station=${from}&station_detail=destination,calling_at`);
         const data = await res.json();
 
         const filtered = (data?.departures?.all || []).filter((dep: any) => {
