@@ -123,7 +123,6 @@ const Home: React.FC = () => {
       {showAlert && (
         <Alert 
           message={alertMessage} 
-          onClose={() => setShowAlert(false)} 
         />
       )}
       <p>Get real-time platform information for UK train departures before it hits the boards. No more last-minute dashes or guesswork.</p>

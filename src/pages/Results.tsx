@@ -81,7 +81,6 @@ const Results: React.FC = () => {
       {showAlert && (
         <Alert 
           message={alertMessage} 
-          onClose={() => setShowAlert(false)} 
         />
       )}
 
