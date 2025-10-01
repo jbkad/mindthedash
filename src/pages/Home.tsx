@@ -135,7 +135,7 @@ const Home: React.FC = () => {
               <input
                 value={fromQuery}
                 onChange={(e) => setFromQuery(e.target.value)}
-                className='col-start-1 row-start-1 w-full appearance-none rounded-sm bg-darkblue border border-highlight hover:border-darkblue focus:border-highlight py-1.5 pl-3 pr-7 text-base text-highlight placeholder:text-gray-500 focus:outline-none sm:text-sm/6'
+                className='col-start-1 row-start-1 w-full appearance-none rounded-sm bg-darkblue border border-highlight hover:bg-highlight/10 transition focus:border-highlight py-1.5 pl-3 pr-7 text-base text-highlight placeholder:text-gray-500 focus:outline-none sm:text-sm/6'
               />
               {fromSuggestions.length > 0 && (
                 <ul className='absolute left-0 right-0 z-10 mt-[42px] w-full shadow-xl bg-highlight rounded-sm max-h-56 overflow-y-auto'>
@@ -161,7 +161,7 @@ const Home: React.FC = () => {
               <input
                 value={toQuery}
                 onChange={(e) => setToQuery(e.target.value)}
-                className='disabled:cursor-not-allowed col-start-1 row-start-1 w-full appearance-none rounded-sm bg-darkblue border border-highlight border-highlight hover:border-darkblue py-1.5 pl-3 pr-7 text-base text-highlight placeholder:text-gray-500 focus:outline-none sm:text-sm/6'
+                className='disabled:cursor-not-allowed col-start-1 row-start-1 w-full appearance-none rounded-sm bg-darkblue border border-highlight border-highlight hover:bg-highlight/10 transition py-1.5 pl-3 pr-7 text-base text-highlight placeholder:text-gray-500 focus:outline-none sm:text-sm/6'
                 disabled={!fromStation}
               />
               {toSuggestions.length > 0 && (
@@ -170,7 +170,7 @@ const Home: React.FC = () => {
                     <li
                       key={index}
                       onClick={() => handleToSelect(station)}
-                      className='px-4 py-2 text-black hover:bg-gray-200 cursor-pointer text-sm'
+                      className='px-4 py-2 text-black hover:bg-[#edc31a] cursor-pointer text-sm'
                     >
                       {station.stationName} ({station.crsCode})
                     </li>
