@@ -39,12 +39,10 @@ const App: React.FC = () => {
           </Routes>
         </Router>
       </div>
-      <div className='flex flex-row items-center justify-between mt-[50px]'>
-        <div className='flex gap-2'>
-          <a href='/about' className='mb-1 text-sm hover:underline hover:underline-offset-4'>About</a>
-          <a href='/favourites' className='mb-1 text-sm hover:underline hover:underline-offset-4'>Favourites</a>
-        </div>
-        <div className='text-sm'>Mind The Dash</div>
+      <div className='flex flex-col items-center justify-between mt-[50px]'>
+        <a href='/about' className='mb-1 text-sm hover:underline hover:underline-offset-4'>About</a>
+        <a href='/favourites' className='mb-1 text-sm hover:underline hover:underline-offset-4'>Favourites</a>
+        <div className='mt-5 text-sm text-highlight/75'>Mind The Dash 2025</div>
       </div>
     </div>
   );
