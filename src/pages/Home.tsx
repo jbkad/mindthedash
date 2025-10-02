@@ -31,25 +31,18 @@ const Home: React.FC = () => {
   const handleSubmit = async () => {
     if (!fromStation || !toStation) return;
 
+    setAlertMessage('Checking your journey...')
+    setShowAlert(true);
+
     try {
-      const res = await fetch(`${apiURL}?station=${fromStation}&station_detail=destination,calling_at`);
+      const res = await fetch(`${apiURL}?station=${fromStation}`);
       const data = await res.json();
       const departures = data?.departures?.all || [];
 
       const validJourney = departures.some((dep: any) => {
         const stationObj = stations.find(s => s.crsCode === toStation);
 
-        const matchByCRS = dep.station_detail?.destination?.station_code === toStation;
-        const matchByStop = dep.calling_at?.some((stop: any) => stop.station_code === toStation);
-
-        console.log({
-          depName: dep.destination_name,
-          userQuery: stationObj?.stationName,
-          fromStation,
-          toStation,
-        });
-
-        return matchByCRS || matchByStop;
+        return dep.station_detail?.destination?.station_code === toStation;
       });
 
       console.log('Final decision — validJourney:', validJourney);
@@ -57,15 +50,15 @@ const Home: React.FC = () => {
       if (validJourney) {
         window.location.href = `/results?from=${fromStation}&to=${toStation}`;
       } else {
-        setAlertMessage('No direct trains found between those stations.');
-        setShowAlert(true);
+        setAlertMessage(`No direct trains found between ${fromStation} and ${toStation}.`);
         setTimeout(() => setShowAlert(false), 3000);
         setFromQuery('');
         setToQuery('');
       }
     } catch (err) { console.error('Validation failed:', err); 
       setAlertMessage('Could not validate your journey. Please try again.');
-      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 3000);
+    } finally {
       setTimeout(() => setShowAlert(false), 3000);
     }
   };
@@ -119,6 +112,7 @@ const Home: React.FC = () => {
     setToStation(station.crsCode);
     setShowToSuggestions(false);
   };
+
 
   return (
     <div className='w-full'>
