@@ -4,8 +4,8 @@ const About: React.FC = () => {
         <div className='flex flex-col gap-6 text-justify justify-center'>
             <p>About</p>
             <p>Mind the Dash was born from one infuriating truth: UK train stations often post platform information at the very last minute.</p>
-            <p>As a regular commuter, I found myself sprinting across train stations far too often, so I built Mind the Dash — a real-time platform checker designed to give you a head start. Inspired by the look of classic UK departure boards, it lets you see where your train is likely to depart from before it hits the boards.</p>
-            <p>If you've ever legged it through a station this one's for you.</p>
+            <p>As a regular commuter, I found myself sprinting across train stations far too often, so I built a real-time platform checker designed to give you a head start. Inspired by the look of classic UK departure boards, it lets you see where your train is likely to depart from before it hits the boards.</p>
+            <p>If you've ever legged it through a station, this one's for you.</p>
             <div className='flex items-center justif-center gap-2 w-fit text-lightblue text-sm bg-highlight hover:underline hover:underline-offset-2'>
                 <a href='https://joycekadibu.com/projects/mindthedash/' target='blank'>
                     How was it built?
