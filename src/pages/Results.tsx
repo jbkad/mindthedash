@@ -6,7 +6,6 @@ const Results: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [departures, setDepartures] = useState<any[]>([]);
   const [isFavourite, setIsFavourite] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const [alertMessage, setAlertMessage] = useState('');
@@ -44,39 +43,30 @@ const Results: React.FC = () => {
 
   useEffect(() => {
     const fetchDepartures = async () => {
-      try {
-        const res = await fetch(`${apiURL}?station=${from}&station_detail=destination,calling_at`);
-        const data = await res.json();
+      const res = await fetch(`${apiURL}?station=${from}`);
+      const data = await res.json();
 
-        const filtered = (data?.departures?.all || []).filter((dep: any) => {
-          const isFinalStop = dep.station_detail?.destination?.station_code === to;
-          const isCalledAt = dep.calling_at?.some((stop: any) => stop.station_code === to);
-          return isFinalStop || isCalledAt;
-        });
+      const filtered = (data?.departures?.all || []).filter((dep: any) => {
+        const isFinalStop = dep.station_detail?.destination?.station_code === to;
+        return isFinalStop ;
+      });
 
-        setDepartures(filtered);
-        const saved = localStorage.getItem('favourite');
-        const favourites = saved ? JSON.parse(saved) : [];
+      setDepartures(filtered.slice(0, 8));
+      const saved = localStorage.getItem('favourite');
+      const favourites = saved ? JSON.parse(saved) : [];
 
-        if (filtered.length > 0) {
-          const alreadySaved = favourites.some((fav: any) => fav.from === from && fav.to === to);
-          setIsFavourite(alreadySaved);
-        }
-
-      } catch (err) {
-        setError('Could not fetch departures');
-      } finally {
-        setLoading(false);
+      if (filtered.length > 0) {
+        const alreadySaved = favourites.some((fav: any) => fav.from === from && fav.to === to);
+        setIsFavourite(alreadySaved);
       }
     };
 
     if (from && to) fetchDepartures();
-  }, [from, to]);
+  }, [from, to, apiURL]);
 
   if (!from || !to) return <p>Missing query parameters.</p>;
-  if (loading) return <p>Loading…</p>;
   if (error) return <p className='text-red-500'>{error}</p>;
-  if (departures.length === 0) return <p>No departures found to {to}.</p>;
+  if (departures.length === 0) return <p>Loading...</p>;
 
   return (
     <div>
@@ -93,12 +83,19 @@ const Results: React.FC = () => {
         </button>
       </div>
 
-      <ul className='space-y-2'>
+      <ul className="space-y-2">
         {departures.map((dep, index) => (
-          <li key={index} className='border border-highlight rounded-sm p-3 bg-darkblue text-highlight'>
-            <div className='flex items-center justify-between text-sm'>
-              <p>{dep.aimed_departure_time}</p>
-              <p>Platform {dep.platform}</p>
+          <li key={index} className="border border-highlight rounded-sm p-4 bg-darkblue text-highlight">
+            <div className="flex items-center justify-between gap-4 text-sm">
+
+              <p className="font-semibold text-base">{dep.aimed_departure_time}</p>
+
+              <div className="flex flex-col flex-grow min-w-0">
+                <p className="truncate font-medium">{dep.destination_name}</p>
+                <p className="text-xs font-light text-highlight/70 truncate">{dep.operator_name}</p>
+              </div>
+
+              <p className="bg-highlight text-black text-xs px-2 py-1 rounded-sm font-medium">{!dep.platform ? 'null' : `Platform ${dep.platform}`}</p>
             </div>
           </li>
         ))}
