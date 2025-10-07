@@ -4,4 +4,4 @@
 
 **Mind the Dash** is a web application built to make commuting smoother by showing UK train departure platforms before they appear on the station board. No more last-minute dashes — just reliable, real-time platform info.
 
-Built with **React + TypeScript**, **FastAPI**, and the **TransportAPI**.
+Built with **React + TypeScript**, **FastAPI**, and the **Darwin Webservice Live Departues API**.
