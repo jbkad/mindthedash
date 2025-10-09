@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Alert } from '../components/Alert';
 import stations from '../data/stations.json';
+import Fuse from 'fuse.js';
 import '../index.css';
 
 const Home: React.FC = () => {
@@ -27,6 +28,15 @@ const Home: React.FC = () => {
     constituentCountry: string;
     iataAirportCode?: string;
   };
+
+  const fuse = useMemo(() => {
+    return new Fuse(stations, {
+      keys: ['stationName', 'crsCode'],
+      threshold: 0.2,
+      includeScore: true,
+      isCaseSensitive: false,
+    });
+  }, []);
 
   const handleSubmit = async () => {
     if (!fromStation || !toStation) return;
@@ -65,31 +75,21 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (fromQuery.length > 1) {
-      const filtered = stations.filter(station =>
-        station.stationName.toLowerCase().includes(fromQuery.toLowerCase()) ||
-        station.crsCode.toLowerCase().includes(fromQuery.toLowerCase()) ||
-        station.iataAirportCode?.toLowerCase().includes(fromQuery.toLowerCase())
-      );
-
-      setFromSuggestions(filtered.slice(0, 5));
+      const filtered = fuse.search(fromQuery).slice(0, 5);
+      setFromSuggestions(filtered.map((result: any) => result.item))
     } else {
       setFromSuggestions([]);
     }
-  }, [fromQuery]);
+  }, [fromQuery, fuse]);
 
   useEffect(() => {
     if (toQuery.length > 1) {
-      const filtered = stations.filter(station =>
-        station.stationName.toLowerCase().includes(toQuery.toLowerCase()) ||
-        station.crsCode.toLowerCase().includes(toQuery.toLowerCase()) ||
-        station.iataAirportCode?.toLowerCase().includes(toQuery.toLowerCase())
-      );
-
-      setToSuggestions(filtered.slice(0, 5));
+      const filtered = fuse.search(toQuery).slice(0, 5);
+      setToSuggestions(filtered.map((result: any) => result.item));
     } else {
       setToSuggestions([]);
     }
-  }, [toQuery]);
+  }, [toQuery, fuse]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
