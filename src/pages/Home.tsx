@@ -60,8 +60,8 @@ const Home: React.FC = () => {
       if (validJourney) {
         window.location.href = `/results?from=${fromStation}&to=${toStation}`;
       } else {
-        setAlertMessage(`No direct trains found between ${fromStation} and ${toStation}.`);
-        setTimeout(() => setShowAlert(false), 3000);
+        setAlertMessage(`Hmm, we couldn’t find a direct train between ${fromStation} and ${toStation} in the next hour. Try adjusting your route or check back shortly. `);
+        setTimeout(() => setShowAlert(false), 8000);
         setFromQuery('');
         setToQuery('');
       }
