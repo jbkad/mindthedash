@@ -83,19 +83,19 @@ const Results: React.FC = () => {
         </button>
       </div>
 
-      <ul className="space-y-2">
+      <ul className='space-y-2'>
         {departures.map((dep, index) => (
-          <li key={index} className="border border-highlight rounded-sm p-4 bg-darkblue text-highlight">
-            <div className="flex items-center justify-between gap-4 text-sm">
+          <li key={index} className='border border-highlight rounded-sm p-4 bg-darkblue text-highlight'>
+            <div className='flex items-center justify-between gap-4 text-sm'>
 
-              <p className="font-semibold text-base">{dep.aimed_departure_time}</p>
+              <p className='font-semibold text-base'>{dep.aimed_departure_time}</p>
 
-              <div className="flex flex-col flex-grow min-w-0">
-                <p className="truncate font-medium">{dep.destination_name}</p>
-                <p className="text-xs font-light text-highlight/70 truncate">{dep.operator_name}</p>
+              <div className='flex flex-col flex-grow min-w-0'>
+                <p className='truncate font-medium'>{dep.destination_name}</p>
+                <p className='text-xs font-light text-highlight/70 truncate'>{dep.operator_name}</p>
               </div>
 
-              <p className="bg-highlight text-black text-xs px-2 py-1 rounded-sm font-medium">{!dep.platform ? 'null' : `Platform ${dep.platform}`}</p>
+              <p className='bg-highlight text-black text-xs px-2 py-1 rounded-sm font-medium'>{!dep.platform ? 'null' : `Platform ${dep.platform}`}</p>
             </div>
           </li>
         ))}
