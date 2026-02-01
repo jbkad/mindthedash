@@ -50,9 +50,10 @@ const Home: React.FC = () => {
       const departures = data?.departures?.all || [];
 
       const validJourney = departures.some((dep: any) => {
-        const stationObj = stations.find(s => s.crsCode === toStation);
-
-        return dep.station_detail?.destination?.station_code === toStation;
+        return (
+          dep.station_detail?.destination?.station_code === toStation ||
+          dep.station_detail?.calling_at?.some((s: any) => s.station_code === toStation)
+        );
       });
 
       console.log('Final decision — validJourney:', validJourney);

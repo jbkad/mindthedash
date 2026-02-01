@@ -28,26 +28,49 @@ const Favourites: React.FC = () => {
   };
 
   return (
-   <div className='text-highlight'>
-    <h2 className='mb-4'>My favourite journeys</h2>
-    <ul className='space-y-3'>
-      {favourites.map((fav, index) => (
-        <li
-          key={index}
-          className='group border border-highlight rounded-sm px-4 py-2 bg-darkblue hover:bg-highlight/10 transition'
-        >
-          <a
-            href={`/results?from=${fav.from}&to=${fav.to}`}
-            className='flex justify-between items-center text-highlight group-hover:text-white'
+   <div className='text-highlight space-y-4'>
+    <div className='flex items-start justify-between gap-4'>
+      <div>
+        <h2 className='text-xl font-semibold'>My favourite journeys</h2>
+        <p className='text-xs text-highlight/70 mt-1'>Quick access to your saved routes</p>
+      </div>
+      <button
+        type='button'
+        className='text-xs text-highlight/80 hover:underline hover:underline-offset-4'
+        onClick={() => navigate('/')}
+      >
+        Add new
+      </button>
+    </div>
+
+    {favourites.length === 0 ? (
+      <div className='rounded-sm border border-highlight/30 bg-darkblue/60 px-4 py-3 text-sm text-highlight/75'>
+        No saved trips yet. Add one from results and it will appear here.
+      </div>
+    ) : (
+      <ul className='space-y-3'>
+        {favourites.map((fav, index) => (
+          <li
+            key={index}
+            className='group border border-highlight rounded-sm px-4 py-3 bg-darkblue hover:bg-highlight/10 transition'
           >
-            <span>{getStationName(fav.from)} to {getStationName(fav.to)}</span>
-            <svg xmlns='http://www.w3.org/2000/svg' className='w-4 h-4 group-hover:translate-x-1 transition-transform' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth='1' >
-              <path strokeLinecap='round' strokeLinejoin='round' d='M9 5l7 7-7 7' />
-            </svg>
-          </a>
-        </li>
-      ))}
-    </ul>
+            <button
+              type='button'
+              onClick={() => handleClick(fav)}
+              className='w-full flex items-center justify-between text-highlight group-hover:text-white'
+            >
+              <div className='flex flex-col items-start'>
+                <span className='text-sm'>{getStationName(fav.from)}</span>
+                <span className='text-xs text-highlight/70'>to {getStationName(fav.to)}</span>
+              </div>
+              <svg xmlns='http://www.w3.org/2000/svg' className='w-4 h-4 group-hover:translate-x-1 transition-transform' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth='1' >
+                <path strokeLinecap='round' strokeLinejoin='round' d='M9 5l7 7-7 7' />
+              </svg>
+            </button>
+          </li>
+        ))}
+      </ul>
+    )}
   </div>
   );
 };

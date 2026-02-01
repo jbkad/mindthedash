@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Home2 from './pages/Home2';
 import About from './pages/About';
-import './index.css';
 import Results from './pages/Results';
 import Favourites from './pages/Favourites';
 import Error from './pages/Error';
+import './index.css';
 
 const App: React.FC = () => {
   const [clock, setClock] = useState('--:--:-- BST');
+
+  const currYear = new Date().getFullYear();
 
   useEffect(() => {
     const updateClock = () => {
@@ -34,18 +35,18 @@ const App: React.FC = () => {
       <div className='min-h-[500px]'>
         <Router>
           <Routes>
-            <Route path='/' element={<Home2 />} />
-            {/* <Route path='/about' element={<About />} /> */}
-            {/* <Route path='/results' element={<Results />} /> */}
-            {/* <Route path='/favourites' element={<Favourites />} /> */}
+            <Route path='/' element={<Home />} />
+              <Route path='/about' element={<About />} /> 
+              <Route path='/results' element={<Results />} /> 
+              <Route path='/favourites' element={<Favourites />} />
             <Route path='/*' element={<Error />} />
           </Routes>
         </Router>
       </div>
       <div className='flex flex-col items-center justify-between mt-[50px]'>
-        {/* <a href='/about' className='mb-1 text-sm hover:underline hover:underline-offset-4'>About</a> */}
-        {/* <a href='/favourites' className='mb-1 text-sm hover:underline hover:underline-offset-4'>Favourites</a> */}
-        <div className='mt-5 text-sm text-highlight/75'>Mind The Dash 2025</div>
+        <a href='/about' className='mb-1 text-sm hover:underline hover:underline-offset-4'>About</a>
+        <a href='/favourites' className='mb-1 text-sm hover:underline hover:underline-offset-4'>Favourites</a>
+        <div className='mt-5 text-sm text-highlight/75'>MTD {currYear}</div>
       </div>
     </div>
   );
