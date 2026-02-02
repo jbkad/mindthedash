@@ -182,12 +182,25 @@ const Results: React.FC = () => {
               <div className='flex flex-col flex-grow min-w-0'>
                 <p className='truncate font-medium text-base'>{dep.destination_name}</p>
                 <p className='text-xs font-light text-highlight/70 truncate'>{dep.operator_name}</p>
-                {/* to do: add delay compensation banner after 15+ mins */}
                 {showDelayBanner && (
-                  <p className='text-xs text-red-300'>
-                    {bannerText}
-                  </p>
+                  <div className='mt-1 text-xs text-red-300'>
+                    <span>{bannerText}.</span>
+                    {info.minutes !== null && info.minutes >= 15 && (
+                     <span>
+                      Subject to your train operator,
+                     <a
+                        className='text-xs items-center underline'
+                        href='https://support.thetrainline.com/en/support/solutions/articles/78000000555-my-uk-train-was-delayed-can-i-claim-compensation-'
+                        target='blank'
+                      >
+                       delay compensation
+                      </a>
+                     </span>
+                    )}
+                     {" "}may be available.
+                  </div>
                 )}
+                
               </div>
 
               <div className='flex flex-col items-end gap-1'>
