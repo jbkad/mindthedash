@@ -8,7 +8,6 @@ const Results: React.FC = () => {
   const [isFavourite, setIsFavourite] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const [alertMessage, setAlertMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
@@ -86,7 +85,7 @@ const Results: React.FC = () => {
   if (!from || !to) return <p>Missing query parameters.</p>;
   if (error) return <p className='text-red-500'>{error}</p>;
   if (isLoading) return <p className='text-highlight/70'>Loading...</p>;
-  if (departures.length === 0) return <p className='text-highlight/70'>No direct services found today.</p>;
+  if (departures.length === 0) return <p className='text-highlight/70'>No direct services found between {from} and {to} in the next few hours.</p>;
 
   const parseTime = (value: string | null | undefined) => {
     if (!value || !/^\d{2}:\d{2}$/.test(value)) return null;
@@ -140,73 +139,69 @@ const Results: React.FC = () => {
 
       <ul className='space-y-3'>
         {departures.map((dep, index) => {
-          const hasInfo = Boolean(dep.delay_reason || dep.cancel_reason);
-          const isOpen = openIndex === index;
           const info = getDelayInfo(dep);
+          const hasInfo = Boolean(dep.delay_reason || dep.cancel_reason);
           const showDelayBanner = info.isDelayed || info.label === 'Cancelled';
           const bannerText = hasInfo
             ? (dep.cancel_reason || dep.delay_reason)
             : (info.label === 'Cancelled' ? 'Service cancelled' : 'Service delayed');
+          const isCancelled = info.label === 'Cancelled';
+          const isDelayed = info.isDelayed && !isCancelled;
+          const displayTime = dep.aimed_departure_time;
           return (
           <li
             key={index}
-            className={`border border-highlight rounded-sm p-4 bg-darkblue text-highlight shadow-sm transition ${hasInfo ? ' hover:shadow-lg hover:shadow-black/20' : ''}`}
-            onClick={() => hasInfo && setOpenIndex(isOpen ? null : index)}
-            role={hasInfo ? 'button' : undefined}
-            aria-expanded={hasInfo ? isOpen : undefined}
+            className={`border border-highlight rounded-sm bg-darkblue text-highlight shadow-sm transition ${isDelayed ? 'border-t-0' : ''}`}
           >
-            <div className='flex items-center justify-between gap-2 text-sm'>
-
+            {showDelayBanner && (
+              <div className='rounded-t-sm border border-l-0 border-r-0 border-t-highlight border-b-highlight bg-red-400/10 px-3 py-2 text-xs text-red-400'>
+                <div className='flex items-center gap-2'>
+                  <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+                    <path d='M12 9v4' /><path d='M12 17h.01' /><path d='M10.3 3.8 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0Z' />
+                  </svg>
+                  <span>
+                    {bannerText}.
+                    {info.minutes !== null && info.minutes >= 15 && (
+                      <>
+                        {' '}Subject to your train operator,
+                        <a
+                          className='text-xs items-center underline'
+                          href='https://support.thetrainline.com/en/support/solutions/articles/78000000555-my-uk-train-was-delayed-can-i-claim-compensation-'
+                          target='blank'
+                        >
+                          {' '}delay compensation
+                        </a>{' '}
+                        may be available.
+                      </>
+                    )}
+                  </span>
+                </div>
+              </div>
+              )}
+            <div className='px-4 py-4'>
+              <div className='flex items-center justify-between gap-2 text-sm'>
               <div className='min-w-[72px]'>
-                {(() => {
-                  const isCancelled = info.label === 'Cancelled';
-                  const isDelayed = info.isDelayed && !isCancelled;
-                  const showExpected = isDelayed && typeof dep.expected_departure_time === 'string' && /^\d{2}:\d{2}$/.test(dep.expected_departure_time);
-                  const displayTime = showExpected ? dep.expected_departure_time : dep.aimed_departure_time;
-                  return (
-                    <>
-                      <p className={`font-semibold text-lg tabular-nums ${isDelayed || isCancelled ? 'text-red-400' : ''}`}>
-                        {displayTime}
-                        {isDelayed && info.minutes ? (
-                          <sup className='relative text-[10px] ml-1 -top-[1.75em] left-[-0.5em]'>+{info.minutes}</sup>
-                        ) : null}
-                      </p>
-                      {isCancelled ? (
-                        <p className='text-xs mt-1 text-red-400'>Cancelled</p>
-                      ) : null}
-                    </>
-                  );
-                })()}
+                <p className={`font-semibold text-lg tabular-nums ${isDelayed || isCancelled ? 'text-red-400' : ''}`}>
+                  {displayTime}
+                  {isDelayed && info.minutes ? (
+                    <sup className='relative text-[10px] ml-1 -top-[1.75em] left-[-0.5em]'>+{info.minutes}</sup>
+                  ) : null}
+                </p>
+                {isCancelled ? (
+                  <p className='text-xs text-red-400'>Cancelled</p>
+                ) : null}
               </div>
 
               <div className='flex flex-col flex-grow min-w-0'>
                 <p className='truncate font-medium text-base'>{dep.destination_name}</p>
                 <p className='text-xs font-light text-highlight/70 truncate'>{dep.operator_name}</p>
-                {showDelayBanner && (
-                  <div className='mt-1 text-xs text-red-300'>
-                    <span>{bannerText}.</span>
-                    {info.minutes !== null && info.minutes >= 15 && (
-                     <span>
-                      Subject to your train operator,
-                     <a
-                        className='text-xs items-center underline'
-                        href='https://support.thetrainline.com/en/support/solutions/articles/78000000555-my-uk-train-was-delayed-can-i-claim-compensation-'
-                        target='blank'
-                      >
-                       delay compensation
-                      </a>
-                     </span>
-                    )}
-                     {" "}may be available.
-                  </div>
-                )}
-                
               </div>
 
               <div className='flex flex-col items-end gap-1'>
                 <p className='bg-highlight text-black text-xs px-2 py-1 rounded-sm font-medium whitespace-nowrap'>
                   {!dep.platform || dep.platform === 'null' ? 'TBC' : `Platform ${dep.platform}`}
                 </p>
+              </div>
               </div>
             </div>
           </li>
@@ -215,7 +210,7 @@ const Results: React.FC = () => {
 
       <div className='pt-2 pb-6'>
         <div className='mx-auto max-w-xl rounded-sm border border-highlight/30 bg-darkblue/60 px-4 py-3 text-xs text-highlight/70'>
-          Results are based on scheduled data plus live updates. Always check before you travel.
+          Updates can be delayed. Check before you travel.
         </div>
       </div>
     </div>
