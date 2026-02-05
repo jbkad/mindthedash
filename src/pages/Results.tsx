@@ -119,12 +119,13 @@ const Results: React.FC = () => {
           return isFinalStop || isCallingAt;
         });
 
-        setDepartures(filtered);
+        const cappedResults = filtered.slice(0, 10);
+        setDepartures(cappedResults);
         setShowAllResults(false);
         const saved = localStorage.getItem('favourite');
         const favourites = saved ? JSON.parse(saved) : [];
 
-        if (filtered.length > 0) {
+        if (cappedResults.length > 0) {
           const alreadySaved = favourites.some((fav: any) => fav.from === from && fav.to === to);
           setIsFavourite(alreadySaved);
         }
@@ -150,7 +151,7 @@ const Results: React.FC = () => {
     return <p className='text-highlight/70'>No direct services found between {from} and {to} in the next few hours.</p>;
   }
 
-  const visibleDepartures = showAllResults ? departures : departures.slice(0, 4);
+  const visibleDepartures = showAllResults ? departures : departures.slice(0, 5);
 
   return (
     <div className='space-y-6'>
