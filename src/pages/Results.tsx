@@ -8,6 +8,7 @@ const Results: React.FC = () => {
   const [isFavourite, setIsFavourite] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showAllResults, setShowAllResults] = useState(false);
 
   const [alertMessage, setAlertMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
@@ -108,7 +109,7 @@ const Results: React.FC = () => {
       const timeout = setTimeout(() => controller.abort(), 60000);
 
       try {
-        const res = await fetch(`${apiURL}?station=${from}`, { signal: controller.signal });
+        const res = await fetch(`${apiURL}?station=${from}&to=${to}`, { signal: controller.signal });
         if (!res.ok) throw new Error(`API returned ${res.status}`);
         const data = await res.json();
 
@@ -118,7 +119,8 @@ const Results: React.FC = () => {
           return isFinalStop || isCallingAt;
         });
 
-        setDepartures(filtered.slice(0, 8));
+        setDepartures(filtered);
+        setShowAllResults(false);
         const saved = localStorage.getItem('favourite');
         const favourites = saved ? JSON.parse(saved) : [];
 
@@ -148,24 +150,43 @@ const Results: React.FC = () => {
     return <p className='text-highlight/70'>No direct services found between {from} and {to} in the next few hours.</p>;
   }
 
+  const visibleDepartures = showAllResults ? departures : departures.slice(0, 4);
+
   return (
     <div className='space-y-6'>
       {showAlert && <Alert message={alertMessage} />}
 
-      <div className='flex items-start justify-between gap-2'>
+      <div className='flex items-center justify-between gap-2'>
         <div>
           <h2 className='text-2xl font-semibold tracking-tight'>{from} → {to}</h2>
           <p className='mt-1 text-xs text-highlight/70'>Direct services only • Live updates</p>
         </div>
-        <button onClick={handleSaveFavourite} aria-label='Toggle favourite journey'>
-          <svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill={isFavourite ? '#FFCC00' : 'none'} stroke='#FFCC00' strokeWidth='1' strokeLinecap='round' strokeLinejoin='round'>
+        <button
+          onClick={handleSaveFavourite}
+          aria-label='Toggle favourite journey'
+          className='group rounded-sm p-1 transition'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='22'
+            height='22'
+            viewBox='0 0 24 24'
+            fill={isFavourite ? '#FFCC00' : 'none'}
+            stroke='#FFCC00'
+            strokeWidth='1'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            className={`transition duration-150 group-hover:scale-110 ${
+              isFavourite ? 'fill-highlight' : 'fill-none group-hover:fill-highlight'
+            }`}
+          >
             <path d='M17.286 21.09q -1.69 .001 -5.288 -2.615q -3.596 2.617 -5.288 2.616q -2.726 0 -.495 -6.8q -9.389 -6.775 2.135 -6.775h.076q 1.785 -5.516 3.574 -5.516q 1.785 0 3.574 5.516h.076q 11.525 0 2.133 6.774q 2.23 6.802 -.497 6.8' />
           </svg>
         </button>
       </div>
 
       <ul className='space-y-3'>
-        {departures.map((dep, index) => {
+        {visibleDepartures.map((dep, index) => {
           const info = getDelayInfo(dep);
           const hasInfo = Boolean(dep.delay_reason || dep.cancel_reason);
           const showDelayBanner = info.isDelayed || info.label === 'Cancelled';
@@ -218,9 +239,13 @@ const Results: React.FC = () => {
                   </div>
 
                   <div className='flex flex-col items-end gap-1'>
-                    <p className={`${platformClasses} whitespace-nowrap rounded-sm px-2 py-1 text-xs font-medium text-black`}>
-                      {isCancelled ? '—' : !dep.platform || dep.platform === 'null' ? 'TBC' : `Platform ${dep.platform}`}
-                    </p>
+                    {isCancelled ? ( 
+                        <></>
+                      ) : (
+                        <p className={`${platformClasses} whitespace-nowrap rounded-sm px-2 py-1 text-xs font-medium text-black`}>
+                          {!dep.platform || dep.platform === 'null' ? 'TBC' : `Platform ${dep.platform}`}
+                        </p>
+                      )}
                   </div>
                 </div>
               </div>
@@ -228,7 +253,12 @@ const Results: React.FC = () => {
           );
 
           return (
-            <li className='border border-highlight rounded-sm bg-darkblue text-highlight shadow-sm transition hover:bg-darkblue/50' key={index}>
+            <li
+              className={`border border-highlight rounded-sm bg-darkblue text-highlight shadow-sm transition ${
+                isInteractive ? 'hover:bg-darkblue/50' : ''
+              }`}
+              key={index}
+            >
               {isInteractive ? (
                 <a href={nationalRailUrl} target='_blank' rel='noreferrer' className='block'>
                   {cardContent}
@@ -240,6 +270,18 @@ const Results: React.FC = () => {
           );
         })}
       </ul>
+
+      {departures.length > 5 && (
+        <div className='flex justify-center pt-1'>
+          <button
+            type='button'
+            onClick={() => setShowAllResults((prev) => !prev)}
+            className='rounded-sm border border-highlight/50 px-3 py-1 text-xs text-highlight/80 transition hover:border-highlight hover:text-highlight'
+          >
+            {showAllResults ? 'Show fewer results' : 'View more departures'}
+          </button>
+        </div>
+      )}
 
       <div className='pt-2 pb-6 text-highlight/70 text-xs text-center'>
           Information is provided as-is and may change at short notice. Please check before you travel.
