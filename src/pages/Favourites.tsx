@@ -29,17 +29,31 @@ const Favourites: React.FC = () => {
 
   return (
    <div className='text-highlight space-y-4'>
-    <div className='flex items-start justify-between gap-4'>
+    <div className='flex items-center justify-between gap-4'>
       <div>
         <h2 className='text-xl font-semibold'>My favourite journeys</h2>
         <p className='text-xs text-highlight/70 mt-1'>Quick access to your saved routes</p>
       </div>
       <button
         type='button'
-        className='text-xs text-highlight/80 hover:underline hover:underline-offset-4'
+        className='rounded-sm p-1 text-highlight/80 transition hover:text-highlight'
+        aria-label='Add new journey'
         onClick={() => navigate('/')}
       >
-        Add new
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.25"
+          strokeLinecap='round'
+            strokeLinejoin='round'
+          className='transition duration-150 group-hover:scale-110'
+        >
+          <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /> <path d="M9 12h6" /> <path d="M12 9v6" />
+        </svg>
       </button>
     </div>
 
