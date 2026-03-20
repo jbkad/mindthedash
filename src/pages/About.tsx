@@ -13,7 +13,7 @@ const About: React.FC = () => {
             <p>As a regular commuter, I found myself sprinting across train stations far too often, so I built a real-time platform checker designed to give you a head start. Inspired by the look of classic UK departure boards, it lets you see where your train is likely to depart from before it hits the boards.</p>
             <p>If you've ever legged it through a station, this one's for you.</p>
             <div className='flex items-center gap-2 w-fit text-black text-sm bg-highlight px-3 py-2 rounded-sm hover:underline hover:underline-offset-2'>
-                <a href='https://joycekadibu.com/projects/mindthedash/' target='blank'>
+                <a href='https://joycekadibu.com/technology/mindthedash/' target='blank'>
                     How was it built?
                 </a>
                 <svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1' strokeLinecap='round' strokeLinejoin='round'>
